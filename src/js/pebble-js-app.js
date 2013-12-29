@@ -5,5 +5,5 @@ Pebble.addEventListener("ready", function(e) {
 			"message":"omg from js"
 		});
 		console.log("Message sent");
-	}, 5000);
+	}, 2000);
 });
