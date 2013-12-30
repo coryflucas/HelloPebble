@@ -11,8 +11,19 @@ enum MessageKey {
 	MESSAGE_KEY = 0x0,
 };
 
+static void send_message() {
+	DictionaryIterator *iter;
+	app_message_outbox_begin(&iter);
+	
+	Tuplet value = TupletInteger(1, 0);
+	dict_write_tuplet(iter, &value);
+	
+	app_message_outbox_send();
+}
+
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
 	text_layer_set_text(text_layer, "Select");
+	send_message();
 }
 
 static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
@@ -34,7 +45,7 @@ static void sync_error_callback(DictionaryResult dict_error, AppMessageResult ap
 }
 
 static void sync_tuple_changed_callback(const uint32_t key, const Tuple* new_tuple, const Tuple* old_tuple, void* context) {
-	APP_LOG(APP_LOG_LEVEL_DEBUG, "App Message Sync Tuple Changed");
+	APP_LOG(APP_LOG_LEVEL_DEBUG, "App Message Sync Tuple Changed: %s", new_tuple->value->cstring);
 	switch (key) {
 		case MESSAGE_KEY:
 			text_layer_set_text(sync_layer, new_tuple->value->cstring);
